@@ -40,7 +40,7 @@ async def get_sapling_estimation(
     - results: per-farm items, each with farm_id, status, an optional message
       on failure and on success, pre_slope_count, aligned_count,
       optimal_angle, rotation_average, rotation_std_dev
-      
+
     Requires OFFICER role or higher.
     """
     if current_user.role == Role.OFFICER:
@@ -65,10 +65,10 @@ async def get_sapling_estimation(
         spacing_y=data.spacing_y,
         max_slope=data.max_slope,
     )
-    
+
     for farm_id in data.farm_ids:
         await cache.invalidate(f"grid:{farm_id}")
-    
+
     return estimation_data
 
 
