@@ -134,7 +134,7 @@ describe("calculatorApi", () => {
         }),
       });
 
-      await expect(getSaplingEstimation(42, PARAMS, TOKEN)).rejects.toThrow(
+      await expect(getSaplingEstimation([42], PARAMS, TOKEN)).rejects.toThrow(
         "Field required, Invalid value"
       );
     });
