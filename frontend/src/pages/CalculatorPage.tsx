@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { Helmet } from "react-helmet-async";
 
 import { useCalculator, DEFAULT_CALC_PARAMS } from "@/hooks/useCalculator";
@@ -22,6 +23,12 @@ export default function CalculatorPage() {
     farmIds,
     calcParams
   );
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const selectedResult =
     results.find(r => r.farm_id === selectedFarmId) ?? null;
