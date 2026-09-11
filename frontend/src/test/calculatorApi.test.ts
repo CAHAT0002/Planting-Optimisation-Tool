@@ -125,5 +125,34 @@ describe("calculatorApi", () => {
         "Failed to fetch estimation"
       );
     });
+
+    it("joins validation errors from a detail array", async () => {
+      (global.fetch as Mock).mockResolvedValue({
+        ok: false,
+        json: async () => ({
+          detail: [
+            { msg: "spacing_x must be positive" },
+            { msg: "max_slope out of range" },
+          ],
+        }),
+      });
+
+      await expect(getSaplingEstimation([42], PARAMS, TOKEN)).rejects.toThrow(
+        "spacing_x must be positive, max_slope out of range"
+      );
+    });
+
+    it("falls back to the generic message when the error body isn't JSON", async () => {
+      (global.fetch as Mock).mockResolvedValue({
+        ok: false,
+        json: async () => {
+          throw new Error("Unexpected token");
+        },
+      });
+
+      await expect(getSaplingEstimation([42], PARAMS, TOKEN)).rejects.toThrow(
+        "Failed to fetch estimation"
+      );
+    });
   });
 });

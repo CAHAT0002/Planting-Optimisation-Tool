@@ -43,9 +43,17 @@ export async function getSaplingEstimation(
       max_slope: params.maxSlope,
     }),
   });
+
   if (!res.ok) {
-    const data = await res.json();
-    throw new Error(data.detail || "Failed to fetch estimation");
+    const data = await res.json().catch(() => ({}));
+    const detail =
+      typeof data.detail === "string"
+        ? data.detail
+        : Array.isArray(data.detail)
+          ? data.detail.map((d: { msg?: string }) => d.msg ?? "").join(", ")
+          : "Failed to fetch estimation";
+    throw new Error(detail);
   }
+
   return res.json();
 }

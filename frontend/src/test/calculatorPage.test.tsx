@@ -9,6 +9,7 @@ import type { FarmEstimationResult } from "@/hooks/useCalculator";
 vi.mock("@/hooks/useCalculator", () => ({
   useCalculator: vi.fn(),
   DEFAULT_CALC_PARAMS: { spacingX: 3.0, spacingY: 3.0, maxSlope: 15.0 },
+  AGGREGATE_ID: -1,
 }));
 
 vi.mock("@/hooks/useFarmMap", () => ({
@@ -20,7 +21,11 @@ vi.mock("@/hooks/useFarmMap", () => ({
   })),
 }));
 
-vi.mock("@/components/calculator/FarmMap", () => ({
+vi.mock("@/components/calculator/calculatorFarmMap", () => ({
+  default: () => null,
+}));
+
+vi.mock("@/components/calculator/calculatorCombinedMap", () => ({
   default: () => null,
 }));
 
@@ -102,11 +107,8 @@ describe("CalculatorPage Integration", () => {
 
     renderPage();
 
-    // Auto-focuses the first successful farm
-    expect(
-      screen.getByText(/estimation results - farm 1/i)
-    ).toBeInTheDocument();
-    expect(screen.getByText("80")).toBeInTheDocument();
+    expect(screen.getByText(/aggregate of 2 farms/i)).toBeInTheDocument();
+    expect(screen.getByRole("tablist")).toBeInTheDocument();
 
     await user.click(screen.getByRole("tab", { name: /farm 2/i }));
 
@@ -197,5 +199,61 @@ describe("CalculatorPage Integration", () => {
     await user.type(input, "5");
 
     expect(input).toHaveValue(5);
+  });
+
+  it("defaults to the aggregate view when more than one farm succeeds", () => {
+    vi.mocked(useCalculator).mockReturnValue({
+      ...idleHook,
+      hasSearched: true,
+      results: [success(1, 80), success(2, 55)],
+    });
+
+    renderPage();
+
+    expect(screen.getByText(/aggregate of 2 farms/i)).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /aggregate/i })).toHaveAttribute(
+      "aria-selected",
+      "true"
+    );
+  });
+
+  it("returns to the aggregate view after viewing a single farm", async () => {
+    const user = UserEvent.setup();
+    vi.mocked(useCalculator).mockReturnValue({
+      ...idleHook,
+      hasSearched: true,
+      results: [success(1, 80), success(2, 55)],
+    });
+
+    renderPage();
+
+    await user.click(screen.getByRole("tab", { name: /farm 1/i }));
+    expect(
+      screen.getByText(/estimation results - farm 1/i)
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("tab", { name: /aggregate/i }));
+    expect(screen.getByText(/aggregate of 2 farms/i)).toBeInTheDocument();
+  });
+
+  it("does not show an aggregate tab or card when only one farm succeeds", () => {
+    vi.mocked(useCalculator).mockReturnValue({
+      ...idleHook,
+      hasSearched: true,
+      results: [
+        success(1, 80),
+        { farm_id: 2, status: "failed", message: "No boundary data" },
+      ],
+    });
+
+    renderPage();
+
+    expect(screen.queryByText(/aggregate of/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("tab", { name: /aggregate/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/estimation results - farm 1/i)
+    ).toBeInTheDocument();
   });
 });
