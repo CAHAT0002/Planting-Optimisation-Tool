@@ -119,9 +119,9 @@ describe("CalculatorPage Integration", () => {
     expect(screen.getByText("35")).toBeInTheDocument();
   });
 
-    it("aggregate totals equal the sum of the individual per-farm tabs", async () => {
+  it("aggregate totals equal the sum of the individual per-farm tabs", async () => {
     const user = UserEvent.setup();
-    const farmA = success(1, 80); 
+    const farmA = success(1, 80);
     const farmB = success(2, 55);
     vi.mocked(useCalculator).mockReturnValue({
       ...idleHook,
@@ -133,29 +133,48 @@ describe("CalculatorPage Integration", () => {
 
     expect(screen.getByText(/aggregate of 2 farms/i)).toBeInTheDocument();
 
-    const expectedPreSlope = (farmA.pre_slope_count ?? 0) + (farmB.pre_slope_count ?? 0);
-    const expectedAligned = (farmA.aligned_count ?? 0) + (farmB.aligned_count ?? 0);
-    const expectedAdditional = (farmA.additional_sapling_count ?? 0) + (farmB.additional_sapling_count ?? 0);
+    const expectedPreSlope =
+      (farmA.pre_slope_count ?? 0) + (farmB.pre_slope_count ?? 0);
+    const expectedAligned =
+      (farmA.aligned_count ?? 0) + (farmB.aligned_count ?? 0);
+    const expectedAdditional =
+      (farmA.additional_sapling_count ?? 0) +
+      (farmB.additional_sapling_count ?? 0);
 
     expect(screen.getByText(String(expectedPreSlope))).toBeInTheDocument();
     expect(screen.getByText(String(expectedAligned))).toBeInTheDocument();
     expect(screen.getByText(String(expectedAdditional))).toBeInTheDocument();
 
     await user.click(screen.getByRole("tab", { name: /farm 1/i }));
-    expect(screen.getByText(/estimation results - farm 1/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/estimation results - farm 1/i)
+    ).toBeInTheDocument();
     expect(screen.getByText(String(farmA.pre_slope_count))).toBeInTheDocument();
     expect(screen.getByText(String(farmA.aligned_count))).toBeInTheDocument();
-    expect(screen.getByText(String(farmA.additional_sapling_count))).toBeInTheDocument();
+    expect(
+      screen.getByText(String(farmA.additional_sapling_count))
+    ).toBeInTheDocument();
 
     await user.click(screen.getByRole("tab", { name: /farm 2/i }));
-    expect(screen.getByText(/estimation results - farm 2/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/estimation results - farm 2/i)
+    ).toBeInTheDocument();
     expect(screen.getByText(String(farmB.pre_slope_count))).toBeInTheDocument();
     expect(screen.getByText(String(farmB.aligned_count))).toBeInTheDocument();
-    expect(screen.getByText(String(farmB.additional_sapling_count))).toBeInTheDocument();
+    expect(
+      screen.getByText(String(farmB.additional_sapling_count))
+    ).toBeInTheDocument();
 
-    expect(expectedPreSlope).toBe((farmA.pre_slope_count ?? 0) + (farmB.pre_slope_count ?? 0));
-    expect(expectedAligned).toBe((farmA.aligned_count ?? 0) + (farmB.aligned_count ?? 0));
-    expect(expectedAdditional).toBe((farmA.additional_sapling_count ?? 0) + (farmB.additional_sapling_count ?? 0));
+    expect(expectedPreSlope).toBe(
+      (farmA.pre_slope_count ?? 0) + (farmB.pre_slope_count ?? 0)
+    );
+    expect(expectedAligned).toBe(
+      (farmA.aligned_count ?? 0) + (farmB.aligned_count ?? 0)
+    );
+    expect(expectedAdditional).toBe(
+      (farmA.additional_sapling_count ?? 0) +
+        (farmB.additional_sapling_count ?? 0)
+    );
   });
 
   it("focuses the first successful farm even when earlier farms failed", () => {
