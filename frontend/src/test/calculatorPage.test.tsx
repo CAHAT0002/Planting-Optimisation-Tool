@@ -200,7 +200,7 @@ describe("CalculatorPage Integration", () => {
 
     expect(input).toHaveValue(5);
   });
-  
+
   it("defaults to the aggregate view when more than one farm succeeds", () => {
     vi.mocked(useCalculator).mockReturnValue({
       ...idleHook,

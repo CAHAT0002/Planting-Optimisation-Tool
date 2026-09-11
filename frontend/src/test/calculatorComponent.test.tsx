@@ -228,13 +228,13 @@ describe("CalculatorAggregate", () => {
     );
 
     expect(screen.getByText(/pre-slope sapling count/i)).toBeInTheDocument();
-    expect(screen.getByText("200")).toBeInTheDocument(); 
+    expect(screen.getByText("200")).toBeInTheDocument();
     expect(screen.getByText(/total sapling count/i)).toBeInTheDocument();
-    expect(screen.getByText("160")).toBeInTheDocument(); 
+    expect(screen.getByText("160")).toBeInTheDocument();
     expect(
       screen.getByText(/saplings available to plant/i)
     ).toBeInTheDocument();
-    expect(screen.getByText("120")).toBeInTheDocument(); 
+    expect(screen.getByText("120")).toBeInTheDocument();
   });
 
   it("treats missing numeric fields as zero when summing", () => {
@@ -248,7 +248,7 @@ describe("CalculatorAggregate", () => {
 
     render(<CalculatorAggregate results={[success(1), partial]} />);
 
-    expect(screen.getByText("150")).toBeInTheDocument(); 
+    expect(screen.getByText("150")).toBeInTheDocument();
     expect(screen.getByText("120")).toBeInTheDocument();
     expect(screen.getByText("60")).toBeInTheDocument();
   });
@@ -413,7 +413,7 @@ describe("CalculatorTabs (aggregate)", () => {
     );
 
     screen.getByRole("tab", { name: /aggregate/i }).focus();
-    await user.keyboard("{ArrowRight}");  
+    await user.keyboard("{ArrowRight}");
 
     expect(onSelect).toHaveBeenCalledWith(1);
   });
@@ -431,7 +431,7 @@ describe("CalculatorTabs (aggregate)", () => {
     );
 
     screen.getByRole("tab", { name: /aggregate/i }).focus();
-    await user.keyboard("{ArrowLeft}"); 
+    await user.keyboard("{ArrowLeft}");
 
     expect(onSelect).toHaveBeenCalledWith(2);
   });
@@ -477,7 +477,11 @@ describe("FarmLayers", () => {
 
   it("renders no polylines when there are no lines", () => {
     render(
-      <FarmLayers boundary={boundaryGeoJSON} lines={[]} grid={boundaryGeoJSON} />
+      <FarmLayers
+        boundary={boundaryGeoJSON}
+        lines={[]}
+        grid={boundaryGeoJSON}
+      />
     );
 
     expect(screen.queryByTestId("polyline")).not.toBeInTheDocument();
