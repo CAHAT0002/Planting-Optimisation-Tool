@@ -27,7 +27,7 @@ async def test_create_user_by_supervisor_fails(async_client: AsyncClient, test_s
     """Test that supervisors CANNOT create users.
 
     User creation is restricted to ADMIN only, so that all account creation
-    funnels through either an admin or the public registration + admin-approval 
+    funnels through either an admin or the public registration + admin-approval
     flow.
     """
     response = await async_client.post(
