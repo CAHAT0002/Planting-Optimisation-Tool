@@ -24,7 +24,7 @@ function FitBounds({ boundsList }: { boundsList: L.LatLngBounds[] }) {
     // using UseMap, call fitBounds function using all, with a padding of 40px on all sides
     map.fitBounds(all, { padding: [40, 40] });
     // Rererunning if boundslist's length or the useMap changes
-  }, [boundsList.length, map]);
+  }, [boundsList, map]);
   return null;
 }
 
