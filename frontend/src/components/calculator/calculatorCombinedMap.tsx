@@ -11,6 +11,7 @@ import FarmLayers from "@/components/calculator/calculatorFarmLayers";
 // Function takes a list of rectangles, one per farm in the aggregate
 function FitBounds({ boundsList }: { boundsList: L.LatLngBounds[] }) {
   const map = useMap();
+  const boundsKey = boundsList.map(b => b.toBBoxString()).join("|");
   useEffect(() => {
     // If no boundries bail out
     if (boundsList.length === 0) return;
@@ -24,7 +25,7 @@ function FitBounds({ boundsList }: { boundsList: L.LatLngBounds[] }) {
     // using UseMap, call fitBounds function using all, with a padding of 40px on all sides
     map.fitBounds(all, { padding: [40, 40] });
     // Rererunning if boundslist's length or the useMap changes
-  }, [boundsList.length, map]);
+  }, [boundsKey, map]);
   return null;
 }
 
