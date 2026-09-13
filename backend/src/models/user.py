@@ -67,11 +67,11 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column(String(255))
     is_verified: Mapped[bool] = mapped_column(default=False, nullable=False)
 
-    # Admin approval gate - users cannot log in until an admin approves them
+    # Admin approval gate, users cannot log in until an admin approves them
     is_approved: Mapped[bool] = mapped_column(default=False, nullable=False)
 
-    # The role the applicant requested at registration. The *effective* role lives
-    # in `role` and is only ever assigned by an admin at approval time. Nullable so
+    # The role the applicant requested at registration. The effective role lives
+    # in "role" and is only ever assigned by an admin at approval time. Nullable so
     # pre-existing rows (and admin-created users) are unaffected.
     requested_role: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, default=None)
 
