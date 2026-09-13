@@ -136,4 +136,3 @@ class TokenData(BaseModel):
 
     id: Optional[int] = None  # The user ID stored in the token's subject (sub) field
     role: Optional[str] = None
-    

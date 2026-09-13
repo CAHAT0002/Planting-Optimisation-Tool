@@ -40,9 +40,7 @@ async def list_users(db: AsyncSession, skip: int = 0, limit: int = 100) -> list[
 
 async def list_pending_users(db: AsyncSession) -> list[User]:
     """Returns all users awaiting admin approval, oldest first."""
-    result = await db.execute(
-        select(User).where(User.is_approved.is_(False)).order_by(User.id)
-    )
+    result = await db.execute(select(User).where(User.is_approved.is_(False)).order_by(User.id))
     return list(result.scalars().all())
 
 
