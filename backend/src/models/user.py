@@ -14,8 +14,8 @@ from src.database import Base
 from src.models.association import farm_owners_association
 
 if TYPE_CHECKING:
-    from .farm import Farm
     from .auth_token import AuthToken
+    from .farm import Farm
 
 
 class User(Base):
