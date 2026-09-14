@@ -15,6 +15,7 @@ from src.models.association import farm_owners_association
 
 if TYPE_CHECKING:
     from .farm import Farm
+    from .auth_token import AuthToken
 
 
 class User(Base):
@@ -80,6 +81,14 @@ class User(Base):
 
     # Relationships - farms supervised by this user
     farms: Mapped[List["Farm"]] = relationship(secondary=farm_owners_association, back_populates="owners")
+
+    # Auth tokens (email verification / password reset) belonging to this user.
+    # delete-orphan so removing a user cleans up their tokens and doesn't trip
+    # the auth_tokens_user_id_fkey constraint.
+    tokens: Mapped[List["AuthToken"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
 
     def __repr__(self) -> str:
         """String representation for debugging."""
