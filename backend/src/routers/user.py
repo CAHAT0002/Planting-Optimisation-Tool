@@ -18,11 +18,13 @@ from src.services import user as user_service
 
 router = APIRouter(prefix="/users", tags=["users"])
 
+
 def mask_name(user: User, viewer_id: int, *, reveal: bool = False) -> UserRead:
     data = UserRead.model_validate(user)
     if not reveal and user.id != viewer_id:
         return data.model_copy(update={"name": None})
     return data
+
 
 @router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 async def create_user(
