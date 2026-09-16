@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { ROLES, ROLE_LABELS, type Role, type UserRead } from "@/utils/usersAPI";
+import {
+  ROLES,
+  ROLE_LABELS,
+  type Role,
+  type UserRead,
+  MASKED_NAME,
+} from "@/utils/usersAPI";
 import ConfirmModal from "@/components/shared/confirmModal";
 import "./users.css";
 
@@ -93,7 +99,7 @@ function PendingRow({ applicant, isMutating, onApprove, onReject }: RowProps) {
 
   return (
     <tr>
-      <td>{applicant.name}</td>
+      <td>{applicant.name ?? MASKED_NAME}</td>
       <td>{applicant.email}</td>
       <td>
         {applicant.requested_role ? ROLE_LABELS[applicant.requested_role] : "-"}
@@ -103,7 +109,7 @@ function PendingRow({ applicant, isMutating, onApprove, onReject }: RowProps) {
           className="users-select"
           value={effectiveRole}
           disabled={isMutating}
-          aria-label={`Assign role for ${applicant.name}`}
+          aria-label={`Assign role for ${applicant.email}`}
           onChange={e => setEffectiveRole(e.target.value as Role)}
         >
           {ROLES.map(role => (
@@ -137,9 +143,9 @@ function PendingRow({ applicant, isMutating, onApprove, onReject }: RowProps) {
           title="Reject Registration"
           message={
             <>
-              Are you sure you want to reject <strong>{applicant.name}</strong>?
-              This permanently removes their pending registration and cannot be
-              undone.
+              Are you sure you want to reject <strong>{applicant.email}</strong>
+              ? This permanently removes their pending registration and cannot
+              be undone.
             </>
           }
           confirmLabel="Confirm Reject"

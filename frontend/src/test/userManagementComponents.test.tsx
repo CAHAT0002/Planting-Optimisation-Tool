@@ -85,6 +85,21 @@ describe("UsersTable", () => {
     expect(screen.queryByText("Ada")).not.toBeInTheDocument();
   });
 
+  it("masks the name with a placeholder when the backend omits it", () => {
+    render(
+      <UsersTable
+        users={[makeUser(5, "officer", { name: null })]}
+        currentUserId={null}
+        isMutating={false}
+        onChangeRole={vi.fn()}
+        onDelete={vi.fn().mockResolvedValue(undefined)}
+      />
+    );
+
+    expect(screen.getByText("******")).toBeInTheDocument();
+    expect(screen.queryByText("User 5")).not.toBeInTheDocument();
+  });
+
   it("calls onChangeRole with the new role when the select changes", async () => {
     const user = UserEvent.setup();
     const onChangeRole = vi.fn();
@@ -100,7 +115,7 @@ describe("UsersTable", () => {
     );
 
     await user.selectOptions(
-      screen.getByLabelText(/role for bob/i),
+      screen.getByLabelText(/role for user2@example\.com/i),
       "supervisor"
     );
 
@@ -120,7 +135,9 @@ describe("UsersTable", () => {
 
     const selfRow = container.querySelector("tr.users-row-self") as HTMLElement;
     expect(selfRow).not.toBeNull();
-    expect(within(selfRow).getByLabelText(/role for me/i)).toBeDisabled();
+    expect(
+      within(selfRow).getByLabelText(/role for user99@example\.com/i)
+    ).toBeDisabled();
     expect(
       within(selfRow).getByRole("button", { name: /delete/i })
     ).toBeDisabled();
@@ -137,7 +154,9 @@ describe("UsersTable", () => {
       />
     );
 
-    expect(screen.getByLabelText(/role for bob/i)).toBeDisabled();
+    expect(
+      screen.getByLabelText(/role for user2@example\.com/i)
+    ).toBeDisabled();
     expect(screen.getByRole("button", { name: /delete/i })).toBeDisabled();
   });
 
@@ -160,7 +179,7 @@ describe("UsersTable", () => {
 
       const dialog = screen.getByRole("dialog");
       expect(within(dialog).getByText(/delete user/i)).toBeInTheDocument();
-      expect(within(dialog).getByText("Bob")).toBeInTheDocument();
+      expect(within(dialog).getByText("user2@example.com")).toBeInTheDocument();
 
       await user.click(
         within(dialog).getByRole("button", { name: /confirm delete/i })
@@ -293,12 +312,12 @@ describe("PendingApprovals", () => {
       />
     );
 
-    expect(screen.getByLabelText(/assign role for ann/i)).toHaveValue(
-      "supervisor"
-    );
-    expect(screen.getByLabelText(/assign role for ben/i)).toHaveValue(
-      "officer"
-    );
+    expect(
+      screen.getByLabelText(/assign role for user1@example\.com/i)
+    ).toHaveValue("supervisor");
+    expect(
+      screen.getByLabelText(/assign role for user2@example\.com/i)
+    ).toHaveValue("officer");
   });
 
   it("approves with the requested role by default", async () => {
@@ -333,7 +352,7 @@ describe("PendingApprovals", () => {
     );
 
     await user.selectOptions(
-      screen.getByLabelText(/assign role for ann/i),
+      screen.getByLabelText(/assign role for user1@example\.com/i),
       "admin"
     );
     await user.click(screen.getByRole("button", { name: /approve/i }));
@@ -361,7 +380,7 @@ describe("PendingApprovals", () => {
       expect(
         within(dialog).getByText(/reject registration/i)
       ).toBeInTheDocument();
-      expect(within(dialog).getByText("Ann")).toBeInTheDocument();
+      expect(within(dialog).getByText("user1@example.com")).toBeInTheDocument();
 
       await user.click(
         within(dialog).getByRole("button", { name: /confirm reject/i })

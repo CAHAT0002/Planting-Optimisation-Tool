@@ -16,11 +16,13 @@ export const ROLE_LABELS: Record<Role, string> = {
 export interface UserRead {
   id: number;
   email: string;
-  name: string;
+  name: string | null;
   role: Role;
   is_approved: boolean;
   requested_role: Role | null;
 }
+
+export const MASKED_NAME = "******";
 
 export interface UserCreate {
   email: string;

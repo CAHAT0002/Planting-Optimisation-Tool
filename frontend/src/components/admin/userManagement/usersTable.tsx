@@ -1,5 +1,11 @@
 import { Fragment, useState } from "react";
-import { ROLES, ROLE_LABELS, type Role, type UserRead } from "@/utils/usersAPI";
+import {
+  ROLES,
+  ROLE_LABELS,
+  type Role,
+  type UserRead,
+  MASKED_NAME,
+} from "@/utils/usersAPI";
 import ConfirmModal from "@/components/shared/confirmModal";
 import "./users.css";
 
@@ -107,7 +113,7 @@ export default function UsersTable({
                           key={u.id}
                           className={isSelf ? "users-row-self" : ""}
                         >
-                          <td>{u.name}</td>
+                          <td>{u.name ?? MASKED_NAME}</td>
                           <td>{u.email}</td>
                           <td>
                             <select
@@ -119,7 +125,7 @@ export default function UsersTable({
                                   ? "You can't change your own role"
                                   : undefined
                               }
-                              aria-label={`Role for ${u.name}`}
+                              aria-label={`Role for ${u.email}`}
                               onChange={e =>
                                 onChangeRole(u.id, e.target.value as Role)
                               }
@@ -165,7 +171,7 @@ export default function UsersTable({
           message={
             <>
               Are you sure you want to delete{" "}
-              <strong>{deleteTarget.name}</strong>? This action cannot be
+              <strong>{deleteTarget.email}</strong>? This action cannot be
               undone.
             </>
           }
