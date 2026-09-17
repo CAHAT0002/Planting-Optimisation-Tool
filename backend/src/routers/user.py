@@ -66,6 +66,7 @@ async def read_pending_users(
     users = await user_service.list_pending_users(db)
     return [mask_name(u, current_user.id) for u in users]
 
+
 @router.get("/{user_id}", response_model=UserRead)
 async def read_user(
     user_id: int,
